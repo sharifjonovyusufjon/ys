@@ -10,11 +10,11 @@ export default function Home() {
     <>
       <Head>
         <title>ys</title>
-        <meta name="description" content="Public portfolio" />
+        <meta name="description" content="Public portfolio website" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>hello</div>
+      <div>Welcome to my web site</div>
     </>
   );
 }
