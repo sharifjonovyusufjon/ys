@@ -1,20 +1,39 @@
 import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
+import useDeviceDetect from "@/libs/hooks/useDeviceDetect";
+import { NextPage } from "next";
+import withLayoutHome from "@/libs/layout/withHomeLayout";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
-  return (
-    <>
-      <Head>
-        <title>ys</title>
-        <meta name="description" content="Public portfolio website" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <div>Welcome to my web site</div>
-    </>
-  );
-}
+const Home: NextPage = () => {
+  const device = useDeviceDetect();
+
+  if (device === "mobile") {
+    return (
+      <>
+        <Head>
+          <title>ys</title>
+          <meta name="description" content="Public portfolio website" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <div>Welcome to my web site (Mobile)</div>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Head>
+          <title>ys</title>
+          <meta name="description" content="Public portfolio website" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <div>Welcome to my web site(Desktop)</div>
+      </>
+    );
+  }
+};
+
+export default withLayoutHome(Home);
