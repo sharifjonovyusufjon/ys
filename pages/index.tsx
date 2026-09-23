@@ -6,7 +6,7 @@ import withLayoutHome from "@/libs/layout/withHomeLayout";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const Home: NextPage = () => {
+const HomePage: NextPage = () => {
   const device = useDeviceDetect();
 
   if (device === "mobile") {
@@ -36,4 +36,4 @@ const Home: NextPage = () => {
   }
 };
 
-export default withLayoutHome(Home);
+export default withLayoutHome(HomePage);

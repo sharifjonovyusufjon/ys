@@ -1,7 +1,20 @@
 import type { AppProps } from "next/app";
+import { AppCacheProvider } from "@mui/material-nextjs/v15-pagesRouter";
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import theme from "../libs/theme";
 
 import "@/styles/globals.css";
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+export default function App(props: AppProps) {
+  const { Component, pageProps } = props;
+
+  return (
+    <AppCacheProvider {...props}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </AppCacheProvider>
+  );
 }
