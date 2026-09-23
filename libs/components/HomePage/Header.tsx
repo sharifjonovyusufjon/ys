@@ -10,11 +10,12 @@ const Header = () => {
         <Stack
           sx={{
             with: "100%",
-            height: "400px",
+            height: "2000px",
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
+            background: "red",
           }}
         >
           waiting... (Mobile)
@@ -27,11 +28,12 @@ const Header = () => {
         <Stack
           sx={{
             width: "100%",
-            height: "400px",
+            height: "2000px",
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
+            background: "red",
           }}
         >
           waiting... (Desktop)
