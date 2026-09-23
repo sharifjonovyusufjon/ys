@@ -3,7 +3,9 @@ import { NextPage } from "next";
 import withLayoutHome from "@/libs/layout/withHomeLayout";
 import Header from "@/libs/components/HomePage/Header";
 import Projects from "@/libs/components/HomePage/Projects";
-import Abouth from "@/libs/components/HomePage/Abouth";
+import AboutMe from "@/libs/components/HomePage/AboutMe";
+import Technologies from "@/libs/components/HomePage/Technologies";
+import ExperienceSection from "@/libs/components/HomePage/ExperienceSection";
 
 const SITE_URL = "https://yusufjon.uz";
 const SITE_NAME = "Sharifjonov Yusufjon";
@@ -59,7 +61,9 @@ const HomePage: NextPage = () => {
       </Head>
       <Header />
       <Projects />
-      <Abouth />
+      <AboutMe />
+      <ExperienceSection />
+      <Technologies />
     </>
   );
 };
