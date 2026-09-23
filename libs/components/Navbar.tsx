@@ -67,7 +67,7 @@ const Navbar = () => {
                   justifyContent: "center",
                 }}
               >
-                <RoofingOutlinedIcon sx={{ color: "#1a1a1a" }} />
+                <RoofingOutlinedIcon sx={{ color: "#242424" }} />
               </Link>
             </Stack>
             <div
@@ -106,7 +106,7 @@ const Navbar = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <LinkedInIcon sx={{ color: "#1a1a1a" }} />
+                  <LinkedInIcon sx={{ color: "#242424" }} />
                 </Link>
                 <Link
                   href={SOCIAL.github}
@@ -119,7 +119,7 @@ const Navbar = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <GitHubIcon sx={{ color: "#1a1a1a" }} />
+                  <GitHubIcon sx={{ color: "#242424" }} />
                 </Link>
 
                 <Link
@@ -146,7 +146,7 @@ const Navbar = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <InstagramIcon sx={{ color: "#1a1a1a" }} />
+                  <InstagramIcon sx={{ color: "#242424" }} />
                 </Link>
               </Stack>
             </Stack>
@@ -172,7 +172,7 @@ const Navbar = () => {
                 sx={{
                   width: "100px",
                   height: "40px",
-                  backgroundColor: "#1a1a1a",
+                  backgroundColor: "#242424",
                   color: "#fff",
                   borderRadius: "10px",
                 }}
