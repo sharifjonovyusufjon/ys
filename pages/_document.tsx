@@ -11,6 +11,10 @@ export default function Document() {
         {/* Favicon — public/image.png (96x96) */}
         <link rel="icon" type="image/png" sizes="96x96" href="/image.png" />
         <link rel="apple-touch-icon" href="/image.png" />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+        />
       </Head>
       <body>
         <Main />

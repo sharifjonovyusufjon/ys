@@ -2,6 +2,7 @@ import Head from "next/head";
 import { NextPage } from "next";
 import withLayoutHome from "@/libs/layout/withHomeLayout";
 import Header from "@/libs/components/HomePage/Header";
+import Projects from "@/libs/components/HomePage/Projects";
 
 const SITE_URL = "https://yusufjon.uz";
 const SITE_NAME = "Sharifjonov Yusufjon";
@@ -56,6 +57,7 @@ const HomePage: NextPage = () => {
         />
       </Head>
       <Header />
+      <Projects />
     </>
   );
 };
