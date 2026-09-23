@@ -5,23 +5,11 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <meta charSet="UTF-8" />
-        <meta name="title" content="Sharifjonov Yusufjon" />
         <meta name="robots" content="index, follow" />
-        <link rel="icon" type="/image/png" href="/logo.png" />
 
-        <meta
-          name="keyword"
-          content={
-            "yusufjon, yusufjon.uz, sharifjonov yusufjon, sharifjonov, yusufjon sharifjonov"
-          }
-        />
-        <meta
-          name="description"
-          content={
-            "Public portfolio and blog website |" +
-            "공개 포트폴리오 및 블로그 웹사이트"
-          }
-        />
+        {/* Favicon — public/image.png (96x96) */}
+        <link rel="icon" type="image/png" sizes="96x96" href="/image.png" />
+        <link rel="apple-touch-icon" href="/image.png" />
       </Head>
       <body>
         <Main />
