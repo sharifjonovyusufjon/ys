@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import useDeviceDetect from "@/libs/hooks/useDeviceDetect";
 import { NextPage } from "next";
 import withLayoutHome from "@/libs/layout/withHomeLayout";
+import Header from "@/libs/components/HomePage/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,24 +14,30 @@ const HomePage: NextPage = () => {
     return (
       <>
         <Head>
-          <title>ys</title>
-          <meta name="description" content="Public portfolio website" />
+          <title>Sharifjonov Yusufjon</title>
+          <meta
+            name="description"
+            content="Public portfolio and blog website"
+          />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <link rel="icon" href="/favicon.ico" />
+          <link rel="icon" href="/logo.png" />
         </Head>
-        <div>Welcome to my web site (Mobile)</div>
+        <Header />
       </>
     );
   } else {
     return (
       <>
         <Head>
-          <title>ys</title>
-          <meta name="description" content="Public portfolio website" />
+          <title>Sharifjonov Yusufjon</title>
+          <meta
+            name="description"
+            content="Public portfolio and blog website"
+          />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <link rel="icon" href="/favicon.ico" />
+          <link rel="icon" href="/logo.png" />
         </Head>
-        <div>Welcome to my web site(Desktop)</div>
+        <Header />
       </>
     );
   }

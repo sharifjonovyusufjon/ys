@@ -36,7 +36,16 @@ const Footer = () => {
               justifyContent: "space-between",
             }}
           >
-            <Typography sx={{ fontSize: "11px", color: "#242424" }}>
+            <Typography
+              sx={{
+                fontSize: "11px",
+                color: "#242424",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               © {year} Yusufjon
             </Typography>
             <Stack
@@ -52,7 +61,17 @@ const Footer = () => {
               <Typography>
                 <Link
                   href={SOCIAL.github}
-                  sx={{ fontSize: "11px", color: "#242424" }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  underline="none"
+                  sx={{
+                    fontSize: "11px",
+                    color: "#242424",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
                 >
                   Github
                 </Link>
@@ -60,7 +79,17 @@ const Footer = () => {
               <Typography>
                 <Link
                   href={SOCIAL.linkedin}
-                  sx={{ fontSize: "11px", color: "#242424" }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  underline="none"
+                  sx={{
+                    fontSize: "11px",
+                    color: "#242424",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
                 >
                   LinkedIn
                 </Link>
@@ -68,7 +97,17 @@ const Footer = () => {
               <Typography>
                 <Link
                   href={SOCIAL.telegram}
-                  sx={{ fontSize: "11px", color: "#242424" }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  underline="none"
+                  sx={{
+                    fontSize: "11px",
+                    color: "#242424",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
                 >
                   Telegram
                 </Link>
@@ -76,7 +115,17 @@ const Footer = () => {
               <Typography>
                 <Link
                   href={SOCIAL.instagram}
-                  sx={{ fontSize: "11px", color: "#242424" }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  underline="none"
+                  sx={{
+                    fontSize: "11px",
+                    color: "#242424",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
                 >
                   Instagram
                 </Link>
@@ -89,7 +138,125 @@ const Footer = () => {
   } else {
     return (
       <>
-        <div>Footer (Desktop)</div>
+        <div
+          style={{
+            width: "100%",
+            height: "70px",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Stack
+            style={{
+              width: "390px",
+              height: "60px",
+              borderTop: "1px solid #C4C4C4",
+
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: "11px",
+                color: "#242424",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              © {year} Yusufjon
+            </Typography>
+            <Stack
+              style={{
+                width: "190px",
+
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography>
+                <Link
+                  href={SOCIAL.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  underline="none"
+                  sx={{
+                    fontSize: "11px",
+                    color: "#242424",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  Github
+                </Link>
+              </Typography>
+              <Typography>
+                <Link
+                  href={SOCIAL.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  underline="none"
+                  sx={{
+                    fontSize: "11px",
+                    color: "#242424",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  LinkedIn
+                </Link>
+              </Typography>
+              <Typography>
+                <Link
+                  href={SOCIAL.telegram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  underline="none"
+                  sx={{
+                    fontSize: "11px",
+                    color: "#242424",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  Telegram
+                </Link>
+              </Typography>
+              <Typography>
+                <Link
+                  href={SOCIAL.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  underline="none"
+                  sx={{
+                    fontSize: "11px",
+                    color: "#242424",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  Instagram
+                </Link>
+              </Typography>
+            </Stack>
+          </Stack>
+        </div>
       </>
     );
   }

@@ -67,7 +67,9 @@ const Navbar = () => {
                   justifyContent: "center",
                 }}
               >
-                <RoofingOutlinedIcon sx={{ color: "#242424" }} />
+                <RoofingOutlinedIcon
+                  sx={{ color: "#242424", fontSize: "32px" }}
+                />
               </Link>
             </Stack>
             <div
@@ -97,6 +99,9 @@ const Navbar = () => {
               >
                 <Link
                   href={SOCIAL.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  underline="none"
                   sx={{
                     width: "32px",
                     height: "32px",
@@ -106,10 +111,13 @@ const Navbar = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <LinkedInIcon sx={{ color: "#242424" }} />
+                  <LinkedInIcon sx={{ color: "#242424", fontSize: "25px" }} />
                 </Link>
                 <Link
                   href={SOCIAL.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  underline="none"
                   sx={{
                     width: "32px",
                     height: "32px",
@@ -119,11 +127,14 @@ const Navbar = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <GitHubIcon sx={{ color: "#242424" }} />
+                  <GitHubIcon sx={{ color: "#242424", fontSize: "25px" }} />
                 </Link>
 
                 <Link
                   href={SOCIAL.telegram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  underline="none"
                   sx={{
                     width: "32px",
                     height: "32px",
@@ -133,10 +144,13 @@ const Navbar = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <TelegramIcon sx={{ color: "#1a1a1a" }} />
+                  <TelegramIcon sx={{ color: "#1a1a1a", fontSize: "25px" }} />
                 </Link>
                 <Link
                   href={SOCIAL.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  underline="none"
                   sx={{
                     width: "32px",
                     height: "32px",
@@ -146,7 +160,7 @@ const Navbar = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <InstagramIcon sx={{ color: "#242424" }} />
+                  <InstagramIcon sx={{ color: "#242424", fontSize: "25px" }} />
                 </Link>
               </Stack>
             </Stack>
@@ -229,7 +243,9 @@ const Navbar = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <RoofingOutlinedIcon sx={{ color: "#1a1a1a" }} />
+                  <RoofingOutlinedIcon
+                    sx={{ color: "#1a1a1a", fontSize: "32px" }}
+                  />
                 </Link>
               </Stack>
               <div
@@ -259,6 +275,9 @@ const Navbar = () => {
                 >
                   <Link
                     href={SOCIAL.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    underline="none"
                     sx={{
                       width: "32px",
                       height: "32px",
@@ -268,10 +287,13 @@ const Navbar = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <LinkedInIcon sx={{ color: "#1a1a1a" }} />
+                    <LinkedInIcon sx={{ color: "#1a1a1a", fontSize: "25px" }} />
                   </Link>
                   <Link
                     href={SOCIAL.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    underline="none"
                     sx={{
                       width: "32px",
                       height: "32px",
@@ -281,11 +303,14 @@ const Navbar = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <GitHubIcon sx={{ color: "#1a1a1a" }} />
+                    <GitHubIcon sx={{ color: "#1a1a1a", fontSize: "25px" }} />
                   </Link>
 
                   <Link
                     href={SOCIAL.telegram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    underline="none"
                     sx={{
                       width: "32px",
                       height: "32px",
@@ -295,10 +320,13 @@ const Navbar = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <TelegramIcon sx={{ color: "#1a1a1a" }} />
+                    <TelegramIcon sx={{ color: "#1a1a1a", fontSize: "25px" }} />
                   </Link>
                   <Link
                     href={SOCIAL.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    underline="none"
                     sx={{
                       width: "32px",
                       height: "32px",
@@ -308,7 +336,9 @@ const Navbar = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <InstagramIcon sx={{ color: "#1a1a1a" }} />
+                    <InstagramIcon
+                      sx={{ color: "#1a1a1a", fontSize: "25px" }}
+                    />
                   </Link>
                 </Stack>
               </Stack>
