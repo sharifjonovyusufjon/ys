@@ -1,118 +1,18 @@
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Divider,
-  IconButton,
-  Link,
-  Stack,
-  Tooltip,
-} from "@mui/material";
+import { Box, IconButton, Stack } from "@mui/material";
 import { keyframes } from "@mui/material/styles";
-import type { SxProps, Theme } from "@mui/material/styles";
-import type { SvgIconComponent } from "@mui/icons-material";
-import RoofingOutlinedIcon from "@mui/icons-material/RoofingOutlined";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import InstagramIcon from "@mui/icons-material/Instagram";
-import TelegramIcon from "@mui/icons-material/Telegram";
-import MailOutlineRoundedIcon from "@mui/icons-material/MailOutlineRounded";
+import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { COLORS, EASE, FONT_FAMILY, NAV_HEIGHT, REDUCED_MOTION } from "@/libs/ui";
+import { NAV_ITEMS, SOCIAL, contactMailto } from "@/libs/site";
 
-/* ------------------------------------------------------------------ */
-/*  Types                                                              */
-/* ------------------------------------------------------------------ */
-
-interface SocialLinkItem {
-  label: string;
-  href: string;
-  Icon: SvgIconComponent;
-}
-
-interface SocialLinkProps extends SocialLinkItem {
-  delay: number;
-}
-
-/* ------------------------------------------------------------------ */
-/*  Config                                                             */
-/* ------------------------------------------------------------------ */
-
-const EMAIL = "yusufjon6727@gmail.com";
-
-const SOCIAL_LINKS: readonly SocialLinkItem[] = [
-  {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/in/yusufjon-sharifjonov-20128a33a/",
-    Icon: LinkedInIcon,
-  },
-  {
-    label: "GitHub",
-    href: "https://github.com/sharifjonovyusufjon",
-    Icon: GitHubIcon,
-  },
-  {
-    label: "Telegram",
-    href: "https://t.me/YusufjonSharifjonov",
-    Icon: TelegramIcon,
-  },
-  {
-    label: "Instagram",
-    href: "https://www.instagram.com/sharifjonovyusufjon/",
-    Icon: InstagramIcon,
-  },
-];
-
-const NAVBAR_HEIGHT = 90;
-
-const COLORS = {
-  ink: "#1a1a1a",
-  border: "#C4C4C4",
-  surface: "rgba(255, 255, 255, 0.72)",
-  hover: "rgba(26, 26, 26, 0.06)",
-} as const;
-
-const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
-const REDUCED_MOTION = "@media (prefers-reduced-motion: reduce)";
-
-/* ------------------------------------------------------------------ */
-/*  Animations                                                         */
-/*  "backwards" fill-mode: animatsiya tugagach element o'z stiliga     */
-/*  qaytadi, shuning uchun hover'dagi transform'lar ham ishlaydi.      */
-/* ------------------------------------------------------------------ */
-
-const pillOpen = keyframes`
-  0%   { opacity: 0; transform: scaleX(0.35) translateY(-12px); }
-  60%  { opacity: 1; }
-  100% { opacity: 1; transform: scaleX(1) translateY(0); }
-`;
-
-const itemIn = keyframes`
-  from { opacity: 0; transform: translateY(8px); }
+const menuIn = keyframes`
+  from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: translateY(0); }
 `;
 
-const dividerGrow = keyframes`
-  from { transform: scaleY(0); }
-  to   { transform: scaleY(1); }
-`;
-
-const animatedItem = (delayMs: number) => ({
-  animation: `${itemIn} 500ms ${EASE} ${delayMs}ms backwards`,
-  [REDUCED_MOTION]: { animation: "none" },
-});
-
-const focusRing = (offset = 2) => ({
-  "&:focus-visible": {
-    outline: `2px solid ${COLORS.ink}`,
-    outlineOffset: `${offset}px`,
-  },
-});
-
-/* ------------------------------------------------------------------ */
-/*  Hooks                                                              */
-/* ------------------------------------------------------------------ */
-
 const useScrolled = (threshold = 8): boolean => {
-  const [scrolled, setScrolled] = useState<boolean>(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const onScroll = (): void => setScrolled(window.scrollY > threshold);
@@ -124,103 +24,57 @@ const useScrolled = (threshold = 8): boolean => {
   return scrolled;
 };
 
-/* ------------------------------------------------------------------ */
-/*  Sub-components                                                     */
-/* ------------------------------------------------------------------ */
+const useActiveSection = (): string => {
+  const [active, setActive] = useState("");
 
-const NavDivider = () => (
-  <Divider
-    orientation="vertical"
-    flexItem
-    sx={{
-      my: "12px",
-      borderColor: COLORS.border,
-      transformOrigin: "center",
-      animation: `${dividerGrow} 400ms ${EASE} 300ms backwards`,
-      [REDUCED_MOTION]: { animation: "none" },
-    }}
-  />
-);
+  useEffect(() => {
+    const nodes = NAV_ITEMS.map((item) => document.getElementById(item.id)).filter(
+      (node): node is HTMLElement => Boolean(node),
+    );
+    if (!nodes.length) return;
 
-const SocialLink = ({ label, href, Icon, delay }: SocialLinkProps) => (
-  <Tooltip title={label} arrow enterDelay={300}>
-    <IconButton
-      component="a"
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={label}
-      sx={{
-        width: { xs: 30, sm: 36 },
-        height: { xs: 30, sm: 36 },
-        flexShrink: 0,
-        color: COLORS.ink,
-        borderRadius: "8px",
-        transition: `transform 250ms ${EASE}, background-color 200ms ease`,
-        ...animatedItem(delay),
-        ...focusRing(),
-        "&:hover": {
-          backgroundColor: COLORS.hover,
-          transform: "translateY(-2px)",
-        },
-        "&:active": { transform: "scale(0.92)" },
-      }}
-    >
-      <Icon sx={{ fontSize: { xs: 22, sm: 26 } }} />
-    </IconButton>
-  </Tooltip>
-);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible?.target.id) setActive(visible.target.id);
+      },
+      { rootMargin: "-30% 0px -55% 0px", threshold: [0, 0.25, 0.6] },
+    );
 
-/* ------------------------------------------------------------------ */
-/*  Navbar                                                             */
-/* ------------------------------------------------------------------ */
+    nodes.forEach((node) => observer.observe(node));
+    return () => observer.disconnect();
+  }, []);
 
-const contactButtonSx: SxProps<Theme> = {
-  position: "relative",
-  overflow: "hidden",
-  flexShrink: 0,
-  height: { xs: 36, sm: 40 },
-  minWidth: { xs: 84, sm: 104 },
-  px: { xs: 1.5, sm: 2 },
-  borderRadius: "9px",
-  backgroundColor: COLORS.ink,
-  color: "#fff",
-  fontWeight: 600,
-  fontSize: { xs: 13, sm: 14 },
-  letterSpacing: "0.01em",
-  textTransform: "none",
-  ...animatedItem(700),
-  ...focusRing(3),
-  "& .label, & .icon": {
-    transition: `transform 350ms ${EASE}, opacity 250ms ease`,
-  },
-  "& .icon": {
-    position: "absolute",
-    inset: 0,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    transform: "translateY(100%)",
-    opacity: 0,
-  },
-  "&:hover": { backgroundColor: COLORS.ink },
-  "&:hover .label": { transform: "translateY(-120%)", opacity: 0 },
-  "&:hover .icon": { transform: "translateY(0)", opacity: 1 },
-  "&:active": { transform: "scale(0.96)" },
+  return active;
 };
 
 const Navbar = () => {
   const scrolled = useScrolled();
+  const active = useActiveSection();
+  const [open, setOpen] = useState(false);
 
-  const handleEmail = (): void => {
-    const subject = encodeURIComponent("프로젝트 관련 문의드립니다.");
-    const body = encodeURIComponent("안녕하세요~ ");
-    window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
-  };
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent): void => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  const close = (): void => setOpen(false);
 
   return (
     <>
-      {/* Ekranga qotib turadigan header. Sahifa kontenti scroll paytida uning tagidan o'tadi. */}
       <Box
         component="header"
         sx={{
@@ -228,119 +82,235 @@ const Navbar = () => {
           top: 0,
           left: 0,
           right: 0,
-          zIndex: 1100,
-          boxSizing: "border-box",
-          height: NAVBAR_HEIGHT,
-          px: { xs: "16px", sm: "24px" },
+          zIndex: 1200,
+          height: NAV_HEIGHT,
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
-          // Navbar atrofidagi shaffof joy ostidagi kontentni bosishga xalaqit bermasin
-          pointerEvents: "none",
+          px: { xs: "16px", sm: "24px", md: "32px" },
+          backgroundColor: open
+            ? COLORS.bg
+            : scrolled
+              ? "rgba(244, 241, 235, 0.88)"
+              : "rgba(244, 241, 235, 0.72)",
+          backdropFilter: "blur(16px) saturate(140%)",
+          WebkitBackdropFilter: "blur(16px) saturate(140%)",
+          borderBottom: `1px solid ${scrolled || open ? COLORS.line : "transparent"}`,
+          transition: "background-color 240ms ease, border-color 240ms ease",
         }}
       >
         <Stack
           component="nav"
           aria-label="Main navigation"
           sx={{
-            pointerEvents: "auto",
+            width: "100%",
+            maxWidth: 1120,
+            mx: "auto",
             display: "flex",
             flexDirection: "row",
-            alignItems: "stretch",
-            boxSizing: "border-box",
-            width: "100%",
-            maxWidth: { xs: "370px", sm: "440px" },
-            minWidth: 0,
-            height: { xs: 50, sm: 56 },
-            border: `1px solid ${COLORS.border}`,
-            borderRadius: "12px",
-            backgroundColor: COLORS.surface,
-            backdropFilter: "blur(12px) saturate(160%)",
-            WebkitBackdropFilter: "blur(12px) saturate(160%)",
-            boxShadow: scrolled
-              ? "0 8px 24px -12px rgba(26, 26, 26, 0.25)"
-              : "0 0 0 rgba(0, 0, 0, 0)",
-            transformOrigin: "center",
-            animation: `${pillOpen} 700ms ${EASE} backwards`,
-            transition: "box-shadow 300ms ease",
-            [REDUCED_MOTION]: { animation: "none", transition: "none" },
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 2,
           }}
         >
-          {/* Home */}
           <Box
+            component="a"
+            href="#top"
+            onClick={close}
             sx={{
-              flexShrink: 0,
-              px: { xs: 1.25, sm: 2 },
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              fontFamily: FONT_FAMILY,
+              fontWeight: 700,
+              fontSize: { xs: "15px", md: "16px" },
+              letterSpacing: "-0.03em",
+              color: COLORS.ink,
+              borderRadius: "8px",
+              "&:focus-visible": {
+                outline: `2px solid ${COLORS.ink}`,
+                outlineOffset: "4px",
+              },
             }}
           >
-            <Link
-              href="/"
-              aria-label="Home"
-              sx={{
-                display: "flex",
-                color: COLORS.ink,
-                borderRadius: "8px",
-                p: 0.5,
-                transition: `transform 350ms ${EASE}`,
-                ...animatedItem(350),
-                ...focusRing(),
-                "&:hover": { transform: "rotate(-8deg) scale(1.08)" },
-              }}
-            >
-              <RoofingOutlinedIcon sx={{ fontSize: { xs: 28, sm: 32 } }} />
-            </Link>
+            Yusufjon
           </Box>
 
-          <NavDivider />
-
-          {/* Social */}
           <Stack
             sx={{
-              flex: 1,
-              minWidth: 0,
-              px: { xs: 0.5, sm: 1 },
+              display: { xs: "none", md: "flex" },
+              flexDirection: "row",
+              alignItems: "center",
+              gap: "4px",
+            }}
+          >
+            {NAV_ITEMS.map((item) => {
+              const isActive = active === item.id;
+              return (
+                <Box
+                  key={item.id}
+                  component="a"
+                  href={`#${item.id}`}
+                  aria-current={isActive ? "true" : undefined}
+                  sx={{
+                    px: "14px",
+                    py: "8px",
+                    borderRadius: "999px",
+                    fontFamily: FONT_FAMILY,
+                    fontSize: "14px",
+                    fontWeight: isActive ? 650 : 500,
+                    letterSpacing: "-0.01em",
+                    color: isActive ? COLORS.ink : COLORS.body,
+                    backgroundColor: isActive ? "rgba(26, 25, 22, 0.06)" : "transparent",
+                    transition: `color 200ms ease, background-color 200ms ease`,
+                    "&:hover": {
+                      color: COLORS.ink,
+                      backgroundColor: "rgba(26, 25, 22, 0.05)",
+                    },
+                    "&:focus-visible": {
+                      outline: `2px solid ${COLORS.ink}`,
+                      outlineOffset: "2px",
+                    },
+                  }}
+                >
+                  {item.label}
+                </Box>
+              );
+            })}
+          </Stack>
+
+          <Stack
+            sx={{
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              justifyContent: "space-evenly",
+              gap: "8px",
             }}
           >
-            {SOCIAL_LINKS.map((item, i) => (
-              <SocialLink key={item.label} {...item} delay={420 + i * 70} />
-            ))}
-          </Stack>
-
-          <NavDivider />
-
-          {/* Contact */}
-          <Box
-            sx={{
-              flexShrink: 0,
-              px: { xs: 1, sm: 1.25 },
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <Button
-              onClick={handleEmail}
-              disableElevation
-              aria-label={`Send an email to ${EMAIL}`}
-              sx={contactButtonSx}
+            <Box
+              component="a"
+              href={contactMailto()}
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: { xs: 36, md: 40 },
+                px: { xs: "14px", md: "16px" },
+                borderRadius: "10px",
+                backgroundColor: COLORS.ink,
+                color: "#fff",
+                fontFamily: FONT_FAMILY,
+                fontSize: { xs: "13px", md: "14px" },
+                fontWeight: 600,
+                letterSpacing: "-0.01em",
+                lineHeight: 1,
+                "&:hover": { backgroundColor: "#2c2a26" },
+                "&:focus-visible": {
+                  outline: `2px solid ${COLORS.ink}`,
+                  outlineOffset: "3px",
+                },
+              }}
             >
-              <span className="label">연락하기</span>
-              <span className="icon" aria-hidden="true">
-                <MailOutlineRoundedIcon sx={{ fontSize: 22 }} />
-              </span>
-            </Button>
-          </Box>
+              연락하기
+            </Box>
+
+            <IconButton
+              aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
+              aria-expanded={open}
+              onClick={() => setOpen((value) => !value)}
+              sx={{
+                display: { md: "none" },
+                width: 40,
+                height: 40,
+                color: COLORS.ink,
+                border: `1px solid ${COLORS.line}`,
+                borderRadius: "10px",
+                backgroundColor: COLORS.surface,
+              }}
+            >
+              {open ? (
+                <CloseRoundedIcon sx={{ fontSize: 20 }} />
+              ) : (
+                <MenuRoundedIcon sx={{ fontSize: 20 }} />
+              )}
+            </IconButton>
+          </Stack>
         </Stack>
       </Box>
 
-      {/* Header fixed bo'lgani uchun sahifa boshidagi kontent uning ostida yopilib qolmasligi uchun joy */}
-      <Box aria-hidden="true" sx={{ height: NAVBAR_HEIGHT }} />
+      {open && (
+        <Box
+          sx={{
+            display: { md: "none" },
+            position: "fixed",
+            zIndex: 1190,
+            top: NAV_HEIGHT.xs,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            px: "24px",
+            pt: "28px",
+            pb: "calc(28px + env(safe-area-inset-bottom, 0px))",
+            backgroundColor: COLORS.bg,
+            animation: `${menuIn} 280ms ${EASE}`,
+            [REDUCED_MOTION]: { animation: "none" },
+          }}
+        >
+          <Stack
+            component="nav"
+            aria-label="Mobile navigation"
+            sx={{ height: "100%", display: "flex", flexDirection: "column" }}
+          >
+            {NAV_ITEMS.map((item) => (
+              <Box
+                key={item.id}
+                component="a"
+                href={`#${item.id}`}
+                onClick={close}
+                sx={{
+                  py: "16px",
+                  borderBottom: `1px solid ${COLORS.line}`,
+                  fontFamily: FONT_FAMILY,
+                  fontSize: "32px",
+                  fontWeight: 650,
+                  letterSpacing: "-0.04em",
+                  color: COLORS.ink,
+                }}
+              >
+                {item.label}
+              </Box>
+            ))}
+
+            <Stack
+              sx={{
+                mt: "auto",
+                pt: "24px",
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "wrap",
+                gap: "16px 22px",
+              }}
+            >
+              {SOCIAL.map((item) => (
+                <Box
+                  key={item.label}
+                  component="a"
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    fontFamily: FONT_FAMILY,
+                    fontSize: "14px",
+                    fontWeight: 550,
+                    color: COLORS.body,
+                    "&:hover": { color: COLORS.ink },
+                  }}
+                >
+                  {item.label}
+                </Box>
+              ))}
+            </Stack>
+          </Stack>
+        </Box>
+      )}
+
+      <Box aria-hidden="true" sx={{ height: NAV_HEIGHT }} />
     </>
   );
 };

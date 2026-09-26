@@ -1,46 +1,41 @@
 import { createTheme } from "@mui/material/styles";
+import { FONT_FAMILY } from "./ui";
 
 const theme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#171717", // qora tugmalar
+      main: "#1a1916",
       contrastText: "#ffffff",
     },
     secondary: {
-      main: "#ffffff", // oq "pill" tugmalar
-      contrastText: "#262626",
+      main: "#fffcf8",
+      contrastText: "#1a1916",
     },
     background: {
-      default: "#e9e9e8", // butun sayt foni (body)
-      paper: "#f7f7f6", // Card, Paper fonlari
+      default: "#f4f1eb",
+      paper: "#fffcf8",
     },
     text: {
-      primary: "#171717",
-      secondary: "#737373",
+      primary: "#1a1916",
+      secondary: "#5e5a54",
     },
-    divider: "#e5e5e5",
+    divider: "#e4dfd6",
   },
 
   typography: {
-    fontFamily:
-      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    fontFamily: FONT_FAMILY,
     h1: {
-      fontSize: "3rem",
-      fontWeight: 600,
-      lineHeight: 1.15,
-      letterSpacing: "-0.02em",
+      fontWeight: 700,
+      lineHeight: 1.12,
+      letterSpacing: "-0.045em",
     },
     h2: {
-      fontSize: "2.25rem",
-      fontWeight: 600,
-      lineHeight: 1.2,
-      letterSpacing: "-0.02em",
+      fontWeight: 700,
+      lineHeight: 1.15,
+      letterSpacing: "-0.04em",
     },
-    h3: { fontSize: "1.5rem", fontWeight: 500, lineHeight: 1.4 },
-    body1: { fontSize: "0.875rem" },
-    body2: { fontSize: "0.75rem", lineHeight: 1.6 },
-    button: { textTransform: "none", fontWeight: 500 }, // MUI default KATTA harfni o'chiradi
+    button: { textTransform: "none", fontWeight: 600 },
   },
 
   shape: {
@@ -48,19 +43,27 @@ const theme = createTheme({
   },
 
   breakpoints: {
-    values: { xs: 0, sm: 600, md: 768, lg: 1200, xl: 1536 },
+    values: { xs: 0, sm: 600, md: 900, lg: 1200, xl: 1536 },
   },
 
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          fontFamily: FONT_FAMILY,
+        },
+      },
+    },
     MuiButton: {
       defaultProps: {
         disableElevation: true,
       },
       styleOverrides: {
         root: {
-          borderRadius: 999, // hamma tugmalar dumaloq
-          padding: "10px 24px",
-          fontSize: "0.75rem",
+          borderRadius: 10,
+          padding: "10px 18px",
+          fontSize: "0.875rem",
+          fontFamily: FONT_FAMILY,
         },
       },
     },
