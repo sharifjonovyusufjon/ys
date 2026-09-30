@@ -1,35 +1,62 @@
-import { useState } from "react";
-import type { FormEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { Box, TextField, Typography } from "@mui/material";
+import type { GetServerSideProps, NextPage } from "next";
+import { Box, Typography } from "@mui/material";
 import LangThemeControls from "@/libs/components/LangThemeControls";
 import { useI18n } from "@/libs/locale";
 import { COLORS, FONT_FAMILY } from "@/libs/ui";
 
-const LoginPage = () => {
+type TelegramUser = {
+  id: number;
+  first_name?: string;
+  last_name?: string;
+  username?: string;
+  photo_url?: string;
+  auth_date: number;
+  hash: string;
+};
+
+declare global {
+  interface Window {
+    onTelegramAuth?: (user: TelegramUser) => void;
+  }
+}
+
+const LoginPage: NextPage<{ bot: string }> = ({ bot }) => {
   const router = useRouter();
   const { m } = useI18n();
-  const [password, setPassword] = useState("");
+  const slot = useRef<HTMLDivElement>(null);
   const [error, setError] = useState(false);
-  const [pending, setPending] = useState(false);
 
-  const submit = async (event: FormEvent): Promise<void> => {
-    event.preventDefault();
-    setPending(true);
-    setError(false);
-    const response = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
-    setPending(false);
-    if (response.ok) {
-      router.push("/admin");
-      return;
-    }
-    setError(true);
-  };
+  useEffect(() => {
+    if (!bot || !slot.current) return;
+    window.onTelegramAuth = async (user) => {
+      setError(false);
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(user),
+      });
+      if (response.ok) {
+        router.push("/admin");
+        return;
+      }
+      setError(true);
+    };
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = "https://telegram.org/js/telegram-widget.js?22";
+    script.setAttribute("data-telegram-login", bot);
+    script.setAttribute("data-size", "large");
+    script.setAttribute("data-radius", "12");
+    script.setAttribute("data-userpic", "false");
+    script.setAttribute("data-onauth", "onTelegramAuth(user)");
+    slot.current.replaceChildren(script);
+    return () => {
+      delete window.onTelegramAuth;
+    };
+  }, [bot, router]);
 
   return (
     <>
@@ -48,8 +75,6 @@ const LoginPage = () => {
         }}
       >
         <Box
-          component="form"
-          onSubmit={submit}
           sx={{
             width: "100%",
             maxWidth: 420,
@@ -59,7 +84,7 @@ const LoginPage = () => {
             backgroundColor: COLORS.surface,
             display: "flex",
             flexDirection: "column",
-            gap: "14px",
+            gap: "16px",
           }}
         >
           <Typography
@@ -68,42 +93,29 @@ const LoginPage = () => {
           >
             {m.admin.loginTitle}
           </Typography>
-          <TextField
-            type="password"
-            size="small"
-            label={m.admin.password}
-            value={password}
-            autoFocus
-            onChange={(event) => setPassword(event.target.value)}
-          />
-          {error && (
+          <Typography sx={{ m: 0, fontFamily: FONT_FAMILY, fontSize: "14px", lineHeight: 1.6, color: COLORS.body }}>
+            {m.admin.telegramHint}
+          </Typography>
+          <Box ref={slot} sx={{ minHeight: 44 }} />
+          {!bot && (
             <Typography sx={{ fontFamily: FONT_FAMILY, fontSize: "13px", color: "#b42318" }}>
-              {m.admin.badPassword}
+              {m.admin.telegramMissing}
             </Typography>
           )}
-          <Box
-            component="button"
-            type="submit"
-            disabled={pending}
-            sx={{
-              height: 44,
-              border: 0,
-              borderRadius: "12px",
-              backgroundColor: COLORS.inverse,
-              color: COLORS.inverseText,
-              fontFamily: FONT_FAMILY,
-              fontSize: "15px",
-              fontWeight: 650,
-              cursor: "pointer",
-            }}
-          >
-            {m.admin.login}
-          </Box>
+          {error && (
+            <Typography sx={{ fontFamily: FONT_FAMILY, fontSize: "13px", color: "#b42318" }}>
+              {m.admin.telegramDenied}
+            </Typography>
+          )}
           <LangThemeControls />
         </Box>
       </Box>
     </>
   );
 };
+
+export const getServerSideProps: GetServerSideProps<{ bot: string }> = async () => ({
+  props: { bot: process.env.TELEGRAM_BOT_USERNAME || "" },
+});
 
 export default LoginPage;
