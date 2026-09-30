@@ -1,10 +1,16 @@
 import { Box, Stack, Typography } from "@mui/material";
 import ArrowOutwardRoundedIcon from "@mui/icons-material/ArrowOutwardRounded";
+import { useContent } from "@/libs/content";
+import { useI18n } from "@/libs/locale";
 import { COLORS, FONT_FAMILY, containerSx } from "@/libs/ui";
-import { EMAIL, SOCIAL, contactMailto } from "@/libs/site";
 
 const Footer = () => {
   const year = new Date().getFullYear();
+  const { m, tr } = useI18n();
+  const { profile, socials } = useContent();
+  const github = socials.find((item) => item.label.toLowerCase() === "github") ?? socials[0];
+  const mailto = `mailto:${profile.email}?subject=${encodeURIComponent(m.mailSubject)}&body=${encodeURIComponent(m.mailBody)}`;
+  const lines = tr(profile.footerLead).split("\n");
 
   return (
     <Box
@@ -32,9 +38,12 @@ const Footer = () => {
             wordBreak: "keep-all",
           }}
         >
-          새로운 프로젝트,
-          <br />
-          편하게 연락 주세요.
+          {lines.map((line, index) => (
+            <span key={`${line}-${index}`}>
+              {index > 0 && <br />}
+              {line}
+            </span>
+          ))}
         </Typography>
 
         <Stack
@@ -48,7 +57,7 @@ const Footer = () => {
         >
           <Box
             component="a"
-            href={contactMailto()}
+            href={mailto}
             sx={{
               display: "inline-flex",
               alignItems: "center",
@@ -57,42 +66,44 @@ const Footer = () => {
               height: 48,
               px: "18px",
               borderRadius: "12px",
-              backgroundColor: COLORS.ink,
-              color: "#fff",
+              backgroundColor: COLORS.inverse,
+              color: COLORS.inverseText,
               fontFamily: FONT_FAMILY,
               fontSize: "15px",
               fontWeight: 600,
               lineHeight: 1,
-              "&:hover": { backgroundColor: "#2c2a26" },
+              "&:hover": { backgroundColor: COLORS.inverseHover },
             }}
           >
-            {EMAIL}
+            {profile.email}
             <ArrowOutwardRoundedIcon sx={{ fontSize: 18 }} />
           </Box>
-          <Box
-            component="a"
-            href="https://github.com/sharifjonovyusufjon"
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: 48,
-              px: "18px",
-              borderRadius: "12px",
-              border: `1px solid ${COLORS.line}`,
-              backgroundColor: COLORS.surface,
-              color: COLORS.ink,
-              fontFamily: FONT_FAMILY,
-              fontSize: "15px",
-              fontWeight: 600,
-              lineHeight: 1,
-              "&:hover": { backgroundColor: "#fff", borderColor: "#cfc9be" },
-            }}
-          >
-            GitHub
-          </Box>
+          {github && (
+            <Box
+              component="a"
+              href={github.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 48,
+                px: "18px",
+                borderRadius: "12px",
+                border: `1px solid ${COLORS.line}`,
+                backgroundColor: COLORS.surface,
+                color: COLORS.ink,
+                fontFamily: FONT_FAMILY,
+                fontSize: "15px",
+                fontWeight: 600,
+                lineHeight: 1,
+                "&:hover": { backgroundColor: COLORS.hoverSurface, borderColor: COLORS.hoverLine },
+              }}
+            >
+              {github.label}
+            </Box>
+          )}
         </Stack>
 
         <Stack
@@ -107,14 +118,8 @@ const Footer = () => {
             gap: { xs: "16px", md: "24px" },
           }}
         >
-          <Typography
-            sx={{
-              fontFamily: FONT_FAMILY,
-              fontSize: "13px",
-              color: COLORS.muted,
-            }}
-          >
-            © {year} Yusufjon · Seoul
+          <Typography sx={{ fontFamily: FONT_FAMILY, fontSize: "13px", color: COLORS.muted }}>
+            © {year} {profile.name} · {tr(profile.location)}
           </Typography>
 
           <Stack
@@ -127,7 +132,7 @@ const Footer = () => {
               gap: { xs: "14px 18px", md: "22px" },
             }}
           >
-            {SOCIAL.map((item) => (
+            {socials.map((item) => (
               <Box
                 key={item.label}
                 component="a"
@@ -152,10 +157,7 @@ const Footer = () => {
                     transformOrigin: "right",
                     transition: "transform 280ms ease",
                   },
-                  "&:hover::after": {
-                    transform: "scaleX(1)",
-                    transformOrigin: "left",
-                  },
+                  "&:hover::after": { transform: "scaleX(1)", transformOrigin: "left" },
                 }}
               >
                 {item.label}

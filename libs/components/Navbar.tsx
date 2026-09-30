@@ -1,15 +1,26 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { Box, IconButton, Stack } from "@mui/material";
 import { keyframes } from "@mui/material/styles";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import LangThemeControls from "@/libs/components/LangThemeControls";
+import { useContent } from "@/libs/content";
+import { useI18n } from "@/libs/locale";
 import { COLORS, EASE, FONT_FAMILY, NAV_HEIGHT, REDUCED_MOTION } from "@/libs/ui";
-import { NAV_ITEMS, SOCIAL, contactMailto } from "@/libs/site";
 
 const menuIn = keyframes`
   from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: translateY(0); }
 `;
+
+const NAV = [
+  { id: "work", key: "work" },
+  { id: "about", key: "about" },
+  { id: "experience", key: "experience" },
+  { id: "stack", key: "stack" },
+  { id: "blog", key: "blog" },
+] as const;
 
 const useScrolled = (threshold = 8): boolean => {
   const [scrolled, setScrolled] = useState(false);
@@ -28,7 +39,7 @@ const useActiveSection = (): string => {
   const [active, setActive] = useState("");
 
   useEffect(() => {
-    const nodes = NAV_ITEMS.map((item) => document.getElementById(item.id)).filter(
+    const nodes = NAV.map((item) => document.getElementById(item.id)).filter(
       (node): node is HTMLElement => Boolean(node),
     );
     if (!nodes.length) return;
@@ -50,10 +61,18 @@ const useActiveSection = (): string => {
   return active;
 };
 
+const hrefFor = (id: string): string => (id === "blog" ? "/blog" : `/#${id}`);
+
 const Navbar = () => {
+  const router = useRouter();
   const scrolled = useScrolled();
-  const active = useActiveSection();
+  const section = useActiveSection();
+  const active = router.pathname.startsWith("/blog") ? "blog" : section;
   const [open, setOpen] = useState(false);
+  const { m } = useI18n();
+  const { profile, socials } = useContent();
+
+  const mailto = `mailto:${profile.email}?subject=${encodeURIComponent(m.mailSubject)}&body=${encodeURIComponent(m.mailBody)}`;
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -87,11 +106,7 @@ const Navbar = () => {
           display: "flex",
           alignItems: "center",
           px: { xs: "16px", sm: "24px", md: "32px" },
-          backgroundColor: open
-            ? COLORS.bg
-            : scrolled
-              ? "rgba(244, 241, 235, 0.88)"
-              : "rgba(244, 241, 235, 0.72)",
+          backgroundColor: open ? COLORS.bg : scrolled ? COLORS.navScrolled : COLORS.nav,
           backdropFilter: "blur(16px) saturate(140%)",
           WebkitBackdropFilter: "blur(16px) saturate(140%)",
           borderBottom: `1px solid ${scrolled || open ? COLORS.line : "transparent"}`,
@@ -109,12 +124,12 @@ const Navbar = () => {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-            gap: 2,
+            gap: 1,
           }}
         >
           <Box
             component="a"
-            href="#top"
+            href="/#top"
             onClick={close}
             sx={{
               fontFamily: FONT_FAMILY,
@@ -123,6 +138,7 @@ const Navbar = () => {
               letterSpacing: "-0.03em",
               color: COLORS.ink,
               borderRadius: "8px",
+              flexShrink: 0,
               "&:focus-visible": {
                 outline: `2px solid ${COLORS.ink}`,
                 outlineOffset: "4px",
@@ -134,22 +150,22 @@ const Navbar = () => {
 
           <Stack
             sx={{
-              display: { xs: "none", md: "flex" },
+              display: { xs: "none", lg: "flex" },
               flexDirection: "row",
               alignItems: "center",
               gap: "4px",
             }}
           >
-            {NAV_ITEMS.map((item) => {
+            {NAV.map((item) => {
               const isActive = active === item.id;
               return (
                 <Box
                   key={item.id}
                   component="a"
-                  href={`#${item.id}`}
+                  href={hrefFor(item.id)}
                   aria-current={isActive ? "true" : undefined}
                   sx={{
-                    px: "14px",
+                    px: "12px",
                     py: "8px",
                     borderRadius: "999px",
                     fontFamily: FONT_FAMILY,
@@ -157,19 +173,16 @@ const Navbar = () => {
                     fontWeight: isActive ? 650 : 500,
                     letterSpacing: "-0.01em",
                     color: isActive ? COLORS.ink : COLORS.body,
-                    backgroundColor: isActive ? "rgba(26, 25, 22, 0.06)" : "transparent",
-                    transition: `color 200ms ease, background-color 200ms ease`,
-                    "&:hover": {
-                      color: COLORS.ink,
-                      backgroundColor: "rgba(26, 25, 22, 0.05)",
-                    },
+                    backgroundColor: isActive ? COLORS.pill : "transparent",
+                    transition: "color 200ms ease, background-color 200ms ease",
+                    "&:hover": { color: COLORS.ink, backgroundColor: COLORS.pill },
                     "&:focus-visible": {
                       outline: `2px solid ${COLORS.ink}`,
                       outlineOffset: "2px",
                     },
                   }}
                 >
-                  {item.label}
+                  {m.nav[item.key]}
                 </Box>
               );
             })}
@@ -183,39 +196,42 @@ const Navbar = () => {
               gap: "8px",
             }}
           >
+            <Box sx={{ display: { xs: "none", sm: "block" } }}>
+              <LangThemeControls />
+            </Box>
             <Box
               component="a"
-              href={contactMailto()}
+              href={mailto}
               sx={{
-                display: "inline-flex",
+                display: { xs: "none", md: "inline-flex" },
                 alignItems: "center",
                 justifyContent: "center",
-                height: { xs: 36, md: 40 },
-                px: { xs: "14px", md: "16px" },
+                height: 40,
+                px: "16px",
                 borderRadius: "10px",
-                backgroundColor: COLORS.ink,
-                color: "#fff",
+                backgroundColor: COLORS.inverse,
+                color: COLORS.inverseText,
                 fontFamily: FONT_FAMILY,
-                fontSize: { xs: "13px", md: "14px" },
+                fontSize: "14px",
                 fontWeight: 600,
                 letterSpacing: "-0.01em",
                 lineHeight: 1,
-                "&:hover": { backgroundColor: "#2c2a26" },
+                "&:hover": { backgroundColor: COLORS.inverseHover },
                 "&:focus-visible": {
                   outline: `2px solid ${COLORS.ink}`,
                   outlineOffset: "3px",
                 },
               }}
             >
-              연락하기
+              {m.contact}
             </Box>
 
             <IconButton
-              aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
+              aria-label={open ? m.menuClose : m.menuOpen}
               aria-expanded={open}
               onClick={() => setOpen((value) => !value)}
               sx={{
-                display: { md: "none" },
+                display: { lg: "none" },
                 width: 40,
                 height: 40,
                 color: COLORS.ink,
@@ -224,11 +240,7 @@ const Navbar = () => {
                 backgroundColor: COLORS.surface,
               }}
             >
-              {open ? (
-                <CloseRoundedIcon sx={{ fontSize: 20 }} />
-              ) : (
-                <MenuRoundedIcon sx={{ fontSize: 20 }} />
-              )}
+              {open ? <CloseRoundedIcon sx={{ fontSize: 20 }} /> : <MenuRoundedIcon sx={{ fontSize: 20 }} />}
             </IconButton>
           </Stack>
         </Stack>
@@ -237,15 +249,15 @@ const Navbar = () => {
       {open && (
         <Box
           sx={{
-            display: { md: "none" },
+            display: { lg: "none" },
             position: "fixed",
             zIndex: 1190,
-            top: NAV_HEIGHT.xs,
+            top: NAV_HEIGHT,
             left: 0,
             right: 0,
             bottom: 0,
             px: "24px",
-            pt: "28px",
+            pt: "20px",
             pb: "calc(28px + env(safe-area-inset-bottom, 0px))",
             backgroundColor: COLORS.bg,
             animation: `${menuIn} 280ms ${EASE}`,
@@ -257,26 +269,46 @@ const Navbar = () => {
             aria-label="Mobile navigation"
             sx={{ height: "100%", display: "flex", flexDirection: "column" }}
           >
-            {NAV_ITEMS.map((item) => (
+            <Box sx={{ display: { sm: "none" }, mb: "12px" }}>
+              <LangThemeControls />
+            </Box>
+            {NAV.map((item) => (
               <Box
                 key={item.id}
                 component="a"
-                href={`#${item.id}`}
+                href={hrefFor(item.id)}
                 onClick={close}
                 sx={{
-                  py: "16px",
+                  py: "14px",
                   borderBottom: `1px solid ${COLORS.line}`,
                   fontFamily: FONT_FAMILY,
-                  fontSize: "32px",
+                  fontSize: "28px",
                   fontWeight: 650,
                   letterSpacing: "-0.04em",
                   color: COLORS.ink,
                 }}
               >
-                {item.label}
+                {m.nav[item.key]}
               </Box>
             ))}
-
+            <Box
+              component="a"
+              href={mailto}
+              sx={{
+                mt: "18px",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 46,
+                borderRadius: "12px",
+                backgroundColor: COLORS.inverse,
+                color: COLORS.inverseText,
+                fontFamily: FONT_FAMILY,
+                fontWeight: 650,
+              }}
+            >
+              {m.contact}
+            </Box>
             <Stack
               sx={{
                 mt: "auto",
@@ -287,7 +319,7 @@ const Navbar = () => {
                 gap: "16px 22px",
               }}
             >
-              {SOCIAL.map((item) => (
+              {socials.map((item) => (
                 <Box
                   key={item.label}
                   component="a"

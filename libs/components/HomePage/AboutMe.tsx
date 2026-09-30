@@ -11,6 +11,8 @@ import TranslateRoundedIcon from "@mui/icons-material/TranslateRounded";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import SectionHeading from "@/libs/components/SectionHeading";
+import { useContent } from "@/libs/content";
+import { useI18n } from "@/libs/locale";
 import { COLORS, EASE, FONT_FAMILY, REDUCED_MOTION, containerSx, sectionSx } from "@/libs/ui";
 
 interface ContactItem {
@@ -21,57 +23,6 @@ interface ContactItem {
   href?: string;
   copy?: string;
 }
-
-export const ABOUT = {
-  bio: "TypeScript, React, Next.js, Node.js, NestJS 및 Express를 사용하여 현대적인 웹 애플리케이션을 구축한 경험을 보유한 풀스택 개발자입니다. MySQL 및 MongoDB를 포함한 SQL 및 NoSQL 데이터베이스에 능숙합니다. 프론트엔드와 백엔드 전반에 걸쳐 깔끔하고 재사용 가능한 컴포넌트와 확장 가능한 아키텍처 설계에 능숙하며, 성능, 유지보수성, 안전한 API 개발 및 직관적인 사용자 경험에 중점을 두고 있습니다.",
-  highlights: [
-    "TypeScript",
-    "React",
-    "Next.js",
-    "Node.js",
-    "NestJS",
-    "Express",
-    "MySQL",
-    "MongoDB",
-  ],
-  contacts: [
-    {
-      key: "phone",
-      label: "전화번호",
-      value: "+82 10-8256-6727",
-      Icon: PhoneOutlinedIcon,
-      href: "tel:+821082566727",
-      copy: "+821082566727",
-    },
-    {
-      key: "email",
-      label: "이메일",
-      value: "yusufjon6727@gmail.com",
-      Icon: MailOutlineRoundedIcon,
-      href: "mailto:yusufjon6727@gmail.com",
-      copy: "yusufjon6727@gmail.com",
-    },
-    {
-      key: "visa",
-      label: "비자",
-      value: "D-10 구직 비자",
-      Icon: BadgeOutlinedIcon,
-    },
-    {
-      key: "location",
-      label: "위치",
-      value: "서울, 대한민국",
-      Icon: PlaceOutlinedIcon,
-    },
-  ] as ContactItem[],
-  korean: {
-    title: "한국어 능력",
-    program: "사회통합프로그램 (KIIP)",
-    level: 5,
-    totalLevels: 5,
-    note: "5단계 이수 · 최고 단계",
-  },
-};
 
 const fadeUp = keyframes`
   from { opacity: 0; transform: translateY(12px); }
@@ -88,14 +39,15 @@ const enter = (delayMs: number) => ({
   [REDUCED_MOTION]: { animation: "none" },
 });
 
-const escapeRegExp = (value: string): string =>
-  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 const highlightText = (text: string, words: string[]): ReactNode[] => {
-  const sorted = [...words].sort((a, b) => b.length - a.length);
+  const usable = words.filter(Boolean);
+  if (!usable.length) return [text];
+  const sorted = [...usable].sort((a, b) => b.length - a.length);
   const pattern = new RegExp(`(${sorted.map(escapeRegExp).join("|")})`, "g");
   return text.split(pattern).map((part, i) =>
-    words.includes(part) ? (
+    usable.includes(part) ? (
       <Box component="strong" key={i} sx={{ color: COLORS.ink, fontWeight: 650 }}>
         {part}
       </Box>
@@ -121,15 +73,18 @@ const ContactRow = ({
   item,
   delay,
   copied,
+  copyLabel,
+  copiedLabel,
   onCopy,
 }: {
   item: ContactItem;
   delay: number;
   copied: boolean;
+  copyLabel: string;
+  copiedLabel: string;
   onCopy: (item: ContactItem) => void;
 }) => {
   const { Icon } = item;
-
   const content = (
     <>
       <Box
@@ -143,7 +98,7 @@ const ContactRow = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#f3efe8",
+          backgroundColor: COLORS.iconBg,
           color: COLORS.ink,
           transition: "background-color 220ms ease, color 220ms ease",
         }}
@@ -199,10 +154,7 @@ const ContactRow = ({
         border: `1px solid ${COLORS.line}`,
         backgroundColor: COLORS.surface,
         ...enter(delay),
-        "&:hover .contact-icon": {
-          backgroundColor: COLORS.ink,
-          color: "#fff",
-        },
+        "&:hover .contact-icon": { backgroundColor: COLORS.inverse, color: COLORS.inverseText },
         "&:hover .copy-btn": { opacity: 1 },
         "@media (hover: none)": { "& .copy-btn": { opacity: 1 } },
       }}
@@ -220,27 +172,21 @@ const ContactRow = ({
             color: "inherit",
             textDecoration: "none",
             "&:hover .value-text": { textDecoration: "underline" },
-            "&:focus-visible": {
-              outline: `2px solid ${COLORS.ink}`,
-              outlineOffset: "3px",
-              borderRadius: "8px",
-            },
+            "&:focus-visible": { outline: `2px solid ${COLORS.ink}`, outlineOffset: "3px", borderRadius: "8px" },
           }}
         >
           {content}
         </Box>
       ) : (
-        <Box sx={{ minWidth: 0, flex: 1, display: "flex", alignItems: "center", gap: "12px" }}>
-          {content}
-        </Box>
+        <Box sx={{ minWidth: 0, flex: 1, display: "flex", alignItems: "center", gap: "12px" }}>{content}</Box>
       )}
 
       {item.copy && (
-        <Tooltip title={copied ? "복사됨" : "복사"} arrow placement="top">
+        <Tooltip title={copied ? copiedLabel : copyLabel} arrow placement="top">
           <IconButton
             className="copy-btn"
             size="small"
-            aria-label={`${item.label} 복사`}
+            aria-label={`${item.label} ${copyLabel}`}
             onClick={() => onCopy(item)}
             sx={{
               flexShrink: 0,
@@ -251,11 +197,7 @@ const ContactRow = ({
               transition: "opacity 200ms ease, color 200ms ease",
             }}
           >
-            {copied ? (
-              <CheckRoundedIcon sx={{ fontSize: 16 }} />
-            ) : (
-              <ContentCopyRoundedIcon sx={{ fontSize: 15 }} />
-            )}
+            {copied ? <CheckRoundedIcon sx={{ fontSize: 16 }} /> : <ContentCopyRoundedIcon sx={{ fontSize: 15 }} />}
           </IconButton>
         </Tooltip>
       )}
@@ -263,141 +205,32 @@ const ContactRow = ({
   );
 };
 
-const KoreanLevelCard = ({ delay }: { delay: number }) => {
-  const { title, program, level, totalLevels, note } = ABOUT.korean;
-
-  return (
-    <Stack
-      sx={{
-        mt: { xs: "14px", md: "16px" },
-        display: "flex",
-        flexDirection: "column",
-        gap: "16px",
-        p: { xs: "18px", md: "22px" },
-        borderRadius: "20px",
-        backgroundColor: COLORS.blueSoft,
-        border: `1px solid ${COLORS.blueTrack}`,
-        ...enter(delay),
-      }}
-    >
-      <Stack
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: "14px",
-        }}
-      >
-        <Box
-          aria-hidden="true"
-          sx={{
-            flexShrink: 0,
-            width: 42,
-            height: 42,
-            borderRadius: "12px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: COLORS.blue,
-            color: "#fff",
-          }}
-        >
-          <TranslateRoundedIcon sx={{ fontSize: 22 }} />
-        </Box>
-        <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography
-            sx={{
-              fontFamily: FONT_FAMILY,
-              fontSize: "12px",
-              fontWeight: 650,
-              color: COLORS.blue,
-            }}
-          >
-            {title}
-          </Typography>
-          <Typography
-            component="h3"
-            sx={{
-              m: 0,
-              mt: "2px",
-              fontFamily: FONT_FAMILY,
-              fontSize: { xs: "16px", md: "18px" },
-              fontWeight: 700,
-              letterSpacing: "-0.03em",
-              color: COLORS.ink,
-              wordBreak: "keep-all",
-            }}
-          >
-            {program}
-          </Typography>
-        </Box>
-        <Typography
-          sx={{
-            flexShrink: 0,
-            fontFamily: FONT_FAMILY,
-            fontSize: { xs: "28px", md: "32px" },
-            fontWeight: 750,
-            color: COLORS.blue,
-            letterSpacing: "-0.04em",
-            lineHeight: 1,
-          }}
-        >
-          {level}
-          <Box component="span" sx={{ fontSize: "13px", fontWeight: 650, ml: "2px" }}>
-            단계
-          </Box>
-        </Typography>
-      </Stack>
-
-      <Stack
-        role="img"
-        aria-label={`${totalLevels}단계 중 ${level}단계 이수`}
-        sx={{ display: "flex", flexDirection: "row", gap: "6px" }}
-      >
-        {Array.from({ length: totalLevels }, (_, i) => (
-          <Box
-            key={i}
-            sx={{
-              flex: 1,
-              height: 6,
-              borderRadius: "999px",
-              backgroundColor: COLORS.blueTrack,
-              overflow: "hidden",
-            }}
-          >
-            {i < level && (
-              <Box
-                sx={{
-                  width: "100%",
-                  height: "100%",
-                  backgroundColor: COLORS.blue,
-                  transformOrigin: "left",
-                  animation: `${segmentFill} 420ms ${EASE} ${delay + 280 + i * 90}ms backwards`,
-                  [REDUCED_MOTION]: { animation: "none" },
-                }}
-              />
-            )}
-          </Box>
-        ))}
-      </Stack>
-
-      <Typography
-        sx={{
-          fontFamily: FONT_FAMILY,
-          fontSize: "14px",
-          fontWeight: 550,
-          color: COLORS.body,
-        }}
-      >
-        {note}
-      </Typography>
-    </Stack>
-  );
-};
-
 const AboutMe = () => {
+  const { m, tr } = useI18n();
+  const { profile } = useContent();
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const contacts: ContactItem[] = [
+    {
+      key: "phone",
+      label: m.phone,
+      value: profile.phone,
+      Icon: PhoneOutlinedIcon,
+      href: `tel:${profile.phoneTel}`,
+      copy: profile.phoneTel,
+    },
+    {
+      key: "email",
+      label: m.email,
+      value: profile.email,
+      Icon: MailOutlineRoundedIcon,
+      href: `mailto:${profile.email}`,
+      copy: profile.email,
+    },
+    { key: "visa", label: m.visa, value: tr(profile.visa), Icon: BadgeOutlinedIcon },
+    { key: "location", label: m.location, value: tr(profile.location), Icon: PlaceOutlinedIcon },
+  ];
 
   useEffect(
     () => () => {
@@ -418,18 +251,13 @@ const AboutMe = () => {
     }
   };
 
+  const level = profile.koreanLevel;
+  const total = profile.koreanTotal || 5;
+
   return (
-    <Box
-      component="section"
-      id="about"
-      aria-labelledby="about-title"
-      sx={{
-        ...sectionSx,
-        borderTop: `1px solid ${COLORS.line}`,
-      }}
-    >
+    <Box component="section" id="about" aria-labelledby="about-title" sx={{ ...sectionSx, borderTop: `1px solid ${COLORS.line}` }}>
       <Box sx={containerSx}>
-        <SectionHeading id="about-title" index="02" title="소개" sx={{ mb: { xs: "28px", md: "40px" } }} />
+        <SectionHeading id="about-title" index="02" title={m.sections.about} sx={{ mb: { xs: "28px", md: "40px" } }} />
 
         <Box
           sx={{
@@ -452,37 +280,124 @@ const AboutMe = () => {
               ...enter(160),
             }}
           >
-            {highlightText(ABOUT.bio, ABOUT.highlights)}
+            {highlightText(tr(profile.bio), profile.highlights)}
           </Typography>
 
           <Box>
-            <Box
-              component="ul"
-              sx={{
-                m: 0,
-                p: 0,
-                listStyle: "none",
-                display: "grid",
-                gridTemplateColumns: "1fr",
-                gap: "10px",
-              }}
-            >
-              {ABOUT.contacts.map((item, i) => (
+            <Box component="ul" sx={{ m: 0, p: 0, listStyle: "none", display: "grid", gridTemplateColumns: "1fr", gap: "10px" }}>
+              {contacts.map((item, i) => (
                 <ContactRow
                   key={item.key}
                   item={item}
                   delay={220 + i * 70}
                   copied={copiedKey === item.key}
+                  copyLabel={m.copy}
+                  copiedLabel={m.copied}
                   onCopy={handleCopy}
                 />
               ))}
             </Box>
-            <KoreanLevelCard delay={520} />
+
+            <Stack
+              sx={{
+                mt: { xs: "14px", md: "16px" },
+                display: "flex",
+                flexDirection: "column",
+                gap: "16px",
+                p: { xs: "18px", md: "22px" },
+                borderRadius: "20px",
+                backgroundColor: COLORS.blueSoft,
+                border: `1px solid ${COLORS.blueTrack}`,
+                ...enter(520),
+              }}
+            >
+              <Stack sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "14px" }}>
+                <Box
+                  aria-hidden="true"
+                  sx={{
+                    flexShrink: 0,
+                    width: 42,
+                    height: 42,
+                    borderRadius: "12px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: COLORS.blue,
+                    color: COLORS.inverseText,
+                  }}
+                >
+                  <TranslateRoundedIcon sx={{ fontSize: 22 }} />
+                </Box>
+                <Box sx={{ minWidth: 0, flex: 1 }}>
+                  <Typography sx={{ fontFamily: FONT_FAMILY, fontSize: "12px", fontWeight: 650, color: COLORS.blue }}>
+                    {tr(profile.koreanTitle)}
+                  </Typography>
+                  <Typography
+                    component="h3"
+                    sx={{
+                      m: 0,
+                      mt: "2px",
+                      fontFamily: FONT_FAMILY,
+                      fontSize: { xs: "16px", md: "18px" },
+                      fontWeight: 700,
+                      letterSpacing: "-0.03em",
+                      color: COLORS.ink,
+                      wordBreak: "keep-all",
+                    }}
+                  >
+                    {tr(profile.koreanProgram)}
+                  </Typography>
+                </Box>
+                <Typography
+                  sx={{
+                    flexShrink: 0,
+                    fontFamily: FONT_FAMILY,
+                    fontSize: { xs: "28px", md: "32px" },
+                    fontWeight: 750,
+                    color: COLORS.blue,
+                    letterSpacing: "-0.04em",
+                    lineHeight: 1,
+                  }}
+                >
+                  {level}
+                  <Box component="span" sx={{ fontSize: "13px", fontWeight: 650, ml: "2px" }}>
+                    {m.levelWord}
+                  </Box>
+                </Typography>
+              </Stack>
+
+              <Stack
+                role="img"
+                aria-label={`${level} / ${total}`}
+                sx={{ display: "flex", flexDirection: "row", gap: "6px" }}
+              >
+                {Array.from({ length: total }, (_, i) => (
+                  <Box key={i} sx={{ flex: 1, height: 6, borderRadius: "999px", backgroundColor: COLORS.blueTrack, overflow: "hidden" }}>
+                    {i < level && (
+                      <Box
+                        sx={{
+                          width: "100%",
+                          height: "100%",
+                          backgroundColor: COLORS.blue,
+                          transformOrigin: "left",
+                          animation: `${segmentFill} 420ms ${EASE} ${800 + i * 90}ms backwards`,
+                          [REDUCED_MOTION]: { animation: "none" },
+                        }}
+                      />
+                    )}
+                  </Box>
+                ))}
+              </Stack>
+
+              <Typography sx={{ fontFamily: FONT_FAMILY, fontSize: "14px", fontWeight: 550, color: COLORS.body }}>
+                {tr(profile.koreanNote)}
+              </Typography>
+            </Stack>
           </Box>
         </Box>
 
         <Box component="span" aria-live="polite" sx={visuallyHidden}>
-          {copiedKey ? "복사되었습니다" : ""}
+          {copiedKey ? m.copiedLive : ""}
         </Box>
       </Box>
     </Box>

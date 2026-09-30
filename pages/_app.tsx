@@ -1,20 +1,23 @@
 import type { AppProps } from "next/app";
 import { AppCacheProvider } from "@mui/material-nextjs/v15-pagesRouter";
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import theme from "../libs/theme";
-
+import { ContentProvider } from "@/libs/content";
+import { LocaleProvider } from "@/libs/locale";
+import { ThemeModeProvider } from "@/libs/theme-mode";
+import type { SiteContent } from "@/libs/types";
 import "@/styles/globals.css";
 
-export default function App(props: AppProps) {
+export default function App(props: AppProps<{ content?: SiteContent }>) {
   const { Component, pageProps } = props;
 
   return (
     <AppCacheProvider {...props}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Component {...pageProps} />
-      </ThemeProvider>
+      <LocaleProvider>
+        <ThemeModeProvider>
+          <ContentProvider content={pageProps.content}>
+            <Component {...pageProps} />
+          </ContentProvider>
+        </ThemeModeProvider>
+      </LocaleProvider>
     </AppCacheProvider>
   );
 }

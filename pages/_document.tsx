@@ -1,5 +1,7 @@
 import { Html, Head, Main, NextScript } from "next/document";
 
+const themeBoot = `(function(){try{var t=localStorage.getItem("ys-theme");if(t==="dark"){document.documentElement.setAttribute("data-theme","dark");var m=document.querySelector("meta[name=theme-color]");if(m)m.setAttribute("content","#12110f");}var l=localStorage.getItem("ys-lang");if(l==="en"||l==="uz"||l==="ko"){document.documentElement.lang=l;}}catch(e){}})();`;
+
 export default function Document() {
   return (
     <Html lang="ko">
@@ -8,8 +10,6 @@ export default function Document() {
         <meta name="robots" content="index, follow" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#f4f1eb" />
-
-        {/* Favicon — public/image.png (96x96) */}
         <link rel="icon" type="image/png" sizes="96x96" href="/image.png" />
         <link rel="apple-touch-icon" href="/image.png" />
         <link
@@ -18,6 +18,7 @@ export default function Document() {
         />
       </Head>
       <body>
+        <script dangerouslySetInnerHTML={{ __html: themeBoot }} />
         <Main />
         <NextScript />
       </body>

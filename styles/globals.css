@@ -1,6 +1,58 @@
-:root {
+:root,
+[data-theme="light"] {
   --bg: #f4f1eb;
-  --text: #1a1916;
+  --surface: #fffcf8;
+  --ink: #1a1916;
+  --body: #5e5a54;
+  --muted: #8d897f;
+  --line: #e4dfd6;
+  --green: #0e7a38;
+  --green-soft: #e5f5eb;
+  --blue: #1d4ed8;
+  --blue-soft: #eef3ff;
+  --blue-track: #d9e4fb;
+  --chip: #ffffff;
+  --inverse: #1a1916;
+  --inverse-text: #ffffff;
+  --inverse-hover: #2c2a26;
+  --nav: rgba(244, 241, 235, 0.72);
+  --nav-scrolled: rgba(244, 241, 235, 0.88);
+  --pill: rgba(26, 25, 22, 0.06);
+  --portrait: #e7e2d8;
+  --icon-bg: #f3efe8;
+  --hover-surface: #ffffff;
+  --hover-line: #cfc9be;
+  --dot: #d5d0c6;
+  --shadow: rgba(26, 25, 22, 0.45);
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #12110f;
+  --surface: #1c1b18;
+  --ink: #f3efe6;
+  --body: #c4bfb4;
+  --muted: #9a9488;
+  --line: #2e2c28;
+  --green: #3dce74;
+  --green-soft: #163224;
+  --blue: #8eb0ff;
+  --blue-soft: #1a2744;
+  --blue-track: #2a3d66;
+  --chip: #242320;
+  --inverse: #f3efe6;
+  --inverse-text: #12110f;
+  --inverse-hover: #e4dece;
+  --nav: rgba(18, 17, 15, 0.72);
+  --nav-scrolled: rgba(18, 17, 15, 0.9);
+  --pill: rgba(243, 239, 230, 0.08);
+  --portrait: #2a2824;
+  --icon-bg: #2a2824;
+  --hover-surface: #262420;
+  --hover-line: #4a463e;
+  --dot: #4a463e;
+  --shadow: rgba(0, 0, 0, 0.55);
+  color-scheme: dark;
 }
 
 * {
@@ -20,7 +72,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--bg);
-  color: var(--text);
+  color: var(--ink);
   font-family:
     "Pretendard Variable",
     Pretendard,
@@ -42,9 +94,16 @@ a {
   text-decoration: none;
 }
 
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
 ::selection {
-  background: #1a1916;
-  color: #f4f1eb;
+  background: var(--inverse);
+  color: var(--inverse-text);
 }
 
 @media (max-width: 899px) {

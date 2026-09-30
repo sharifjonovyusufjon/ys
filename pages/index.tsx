@@ -1,11 +1,13 @@
 import Head from "next/head";
-import { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
+import type { SiteContent } from "@/libs/types";
 import withLayoutHome from "@/libs/layout/withHomeLayout";
 import Header from "@/libs/components/HomePage/Header";
 import Projects from "@/libs/components/HomePage/Projects";
 import AboutMe from "@/libs/components/HomePage/AboutMe";
 import Technologies from "@/libs/components/HomePage/Technologies";
 import ExperienceSection from "@/libs/components/HomePage/ExperienceSection";
+import BlogSection from "@/libs/components/HomePage/BlogSection";
 
 const SITE_URL = "https://yusufjon.uz";
 const SITE_NAME = "Sharifjonov Yusufjon";
@@ -35,16 +37,13 @@ const jsonLd = [
   },
 ];
 
-const HomePage: NextPage = () => {
+const HomePage: NextPage<{ content: SiteContent }> = () => {
   return (
     <>
       <Head>
         <title>{TITLE}</title>
         <meta name="description" content={DESCRIPTION} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="canonical" href={SITE_URL} />
-
-        {/* Open Graph (Telegram, Facebook, LinkedIn preview) */}
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content={SITE_NAME} />
         <meta property="og:title" content={TITLE} />
@@ -52,20 +51,27 @@ const HomePage: NextPage = () => {
         <meta property="og:url" content={SITE_URL} />
         <meta property="og:image" content={`${SITE_URL}/image.png`} />
         <meta name="twitter:card" content="summary" />
-
-        {/* Structured data — Google'da sayt nomi uchun */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </Head>
       <Header />
       <Projects />
       <AboutMe />
       <ExperienceSection />
       <Technologies />
+      <BlogSection />
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps<{ content: SiteContent }> = async () => {
+  const { cloneContent } = await import("@/libs/fallback");
+  try {
+    const { loadContent } = await import("@/libs/db");
+    return { props: { content: await loadContent(false) } };
+  } catch (error) {
+    console.error("loadContent failed", error instanceof Error ? error.message : error);
+    return { props: { content: cloneContent() } };
+  }
 };
 
 export default withLayoutHome(HomePage);

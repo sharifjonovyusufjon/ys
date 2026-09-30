@@ -51,6 +51,8 @@ const theme = createTheme({
       styleOverrides: {
         body: {
           fontFamily: FONT_FAMILY,
+          backgroundColor: "var(--bg)",
+          color: "var(--ink)",
         },
       },
     },
